@@ -29,9 +29,9 @@ class BioSRDataset(data.Dataset):
         self,
         subset: str,
         folder_noisy: Path = Path("data/train_crop/"),
-        folder_clean: Path = Path("data/train_crop/"),
+        folder_clean: Path = Path("data/train_crop/"), # remove this 
         returns: list[int] = [0, 1],
-        returns_type: list[str] = ["c", "c"],
+        returns_type: list[str] = ["c", "c"], # remove this 
         mode: str = "train",
     ):
         super().__init__()

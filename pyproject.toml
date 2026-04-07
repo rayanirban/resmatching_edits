@@ -1,7 +1,7 @@
 [project]
-name = "ccfm"
+name = "resmatching"
 version = "0.1.0"
-description = "Conditional Flow Matching for fluorescence microscopy super-resolution"
+description = "ResMatching: Noise-Resilient Computational Super-Resolution via Guided Conditional Flow Matching"
 requires-python = ">=3.10"
 dependencies = [
     "torch>=2.0",
