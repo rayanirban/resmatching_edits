@@ -1,5 +1,3 @@
-import os
-import subprocess
 from pathlib import Path
 from typing import Annotated, Optional
 
@@ -13,18 +11,18 @@ from resmatching.datasets import BioSRDataset
 from resmatching import CCFMFlowMatcher, CCFMUNet
 
 SUBSET_FOLDERS = {
-    "ccp":      "CCPs_SuperRes",
-    "er":       "ER_SuperRes",
-    "factin":   "F-actin_SuperRes",
-    "mt":       "Microtubules_SuperRes",
+    "ccp": "CCPs_SuperRes",
+    "er": "ER_SuperRes",
+    "factin": "F-actin_SuperRes",
+    "mt": "Microtubules_SuperRes",
     "mt_noisy": "MicrotubulesNoisy_SuperRes",
 }
 
 PROJECT_NAMES = {
-    "ccp":      "BioSR_CCP",
-    "er":       "BioSR_ER",
-    "factin":   "BioSR_FACTIN",
-    "mt":       "BioSR_MT",
+    "ccp": "BioSR_CCP",
+    "er": "BioSR_ER",
+    "factin": "BioSR_FACTIN",
+    "mt": "BioSR_MT",
     "mt_noisy": "BioSR_MT_Noisy",
 }
 
@@ -33,13 +31,24 @@ app = typer.Typer()
 
 @app.command()
 def train(
-    subset: Annotated[str, typer.Argument(help=f"Dataset subset. One of: {list(SUBSET_FOLDERS)}")],
-    data_dir: Annotated[Path, typer.Option(help="Root data directory containing subset folders.")] = Path("data"),
-    save_dir: Annotated[Optional[Path], typer.Option(help="Where to save checkpoints. Defaults to ./checkpoints/<subset>.")] = None,
+    subset: Annotated[
+        str, typer.Argument(help=f"Dataset subset. One of: {list(SUBSET_FOLDERS)}")
+    ],
+    data_dir: Annotated[
+        Path, typer.Option(help="Root data directory containing subset folders.")
+    ] = Path("data"),
+    save_dir: Annotated[
+        Optional[Path],
+        typer.Option(
+            help="Where to save checkpoints. Defaults to ./checkpoints/<subset>."
+        ),
+    ] = None,
     batch_size: Annotated[int, typer.Option(help="Training batch size.")] = 16,
     n_epochs: Annotated[int, typer.Option(help="Number of training epochs.")] = 200,
     lr: Annotated[float, typer.Option(help="Adam learning rate.")] = 1e-4,
-    no_wandb: Annotated[bool, typer.Option("--no-wandb", help="Disable Weights & Biases logging.")] = False,
+    no_wandb: Annotated[
+        bool, typer.Option("--no-wandb", help="Disable Weights & Biases logging.")
+    ] = False,
 ):
     if subset not in SUBSET_FOLDERS:
         typer.echo(f"Error: subset must be one of {list(SUBSET_FOLDERS)}", err=True)
@@ -54,13 +63,22 @@ def train(
     save_dir.mkdir(parents=True, exist_ok=True)
 
     # ── Data ────────────────────────────────────────────────────────────────
-    train_set = BioSRDataset(subset, subset_dir / "train_crop", subset_dir / "train_crop", mode="train")
-    val_set   = BioSRDataset(subset, subset_dir / "val_crop",   subset_dir / "val_crop",   mode="val")
-    train_loader = DataLoader(train_set, batch_size=batch_size, shuffle=True,  drop_last=True)
-    val_loader   = DataLoader(val_set,   batch_size=batch_size, shuffle=False, drop_last=True)
+    train_set = BioSRDataset(subset, subset_dir / "train_crop")
+    val_set = BioSRDataset(subset, subset_dir / "val_crop")
+    train_loader = DataLoader(
+        train_set, batch_size=batch_size, shuffle=True, drop_last=True
+    )
+    val_loader = DataLoader(
+        val_set, batch_size=batch_size, shuffle=False, drop_last=True
+    )
 
     # ── Model ────────────────────────────────────────────────────────────────
-    model = CCFMUNet(dim=(2, 128, 128), num_channels=32, out_channels=1, num_res_blocks=1).to(device)
+    model = CCFMUNet(
+        dim=(2, 128, 128), 
+        num_channels=32, 
+        out_channels=1, 
+        num_res_blocks=1
+    ).to(device)
     n_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
     typer.echo(f"Parameters: {n_params / 1e6:.2f}M")
 
@@ -82,32 +100,32 @@ def train(
             reinit=True,
             save_code=True,
         )
-        experiment.config.update(dict(
-            subset=subset,
-            learning_rate=lr,
-            max_epochs=n_epochs,
-            batch_size=batch_size,
-        ))
+        experiment.config.update(
+            dict(
+                subset=subset,
+                learning_rate=lr,
+                max_epochs=n_epochs,
+                batch_size=batch_size,
+            )
+        )
         wandb.run.log_code(".", include_fn=lambda path: path.endswith(".py"))
-        try:
-            git_commit = subprocess.check_output(["git", "rev-parse", "HEAD"]).decode().strip()
-            git_branch = subprocess.check_output(["git", "rev-parse", "--abbrev-ref", "HEAD"]).decode().strip()
-            experiment.config.update({"git_commit": git_commit, "git_branch": git_branch})
-        except Exception:
-            pass
 
     # ── Training loop ────────────────────────────────────────────────────────
     try:
         for epoch in range(n_epochs):
             model.train()
-            with tqdm(train_loader, desc=f"Epoch {epoch+1}/{n_epochs}", unit="batch") as pbar:
+            with tqdm(
+                train_loader, desc=f"Epoch {epoch+1}/{n_epochs}", unit="batch"
+            ) as pbar:
                 for data in pbar:
                     optimizer.zero_grad()
                     x0 = data[:, 1:2].to(device)
                     x1 = data[:, 0:1].to(device)
                     x0_noise = torch.randn_like(x0)
                     t = ts[torch.randint(0, len(ts), (x0.shape[0],))]
-                    t, xt, ut = FM.sample_location_and_conditional_flow(x0_noise, x1, t=t)
+                    t, xt, ut = FM.sample_location_and_conditional_flow(
+                        x0_noise, x1, t=t
+                    )
                     xt = torch.cat([xt, x0], dim=1)
                     loss = criterion(model(t, xt), ut)
                     loss.backward()
@@ -118,13 +136,20 @@ def train(
 
             model.eval()
             avg_val_loss = 0.0
-            with torch.no_grad(), tqdm(val_loader, desc=f"  Val {epoch+1}/{n_epochs}", unit="batch") as pbar:
+            with (
+                torch.no_grad(),
+                tqdm(
+                    val_loader, desc=f"  Val {epoch+1}/{n_epochs}", unit="batch"
+                ) as pbar,
+            ):
                 for data in pbar:
                     x0 = data[:, 1:2].to(device)
                     x1 = data[:, 0:1].to(device)
                     x0_noise = torch.randn_like(x0)
                     t = ts[torch.randint(0, len(ts), (x0.shape[0],))]
-                    t, xt, ut = FM.sample_location_and_conditional_flow(x0_noise, x1, t=t)
+                    t, xt, ut = FM.sample_location_and_conditional_flow(
+                        x0_noise, x1, t=t
+                    )
                     xt = torch.cat([xt, x0], dim=1)
                     loss = criterion(model(t, xt), ut)
                     avg_val_loss += loss.item()
@@ -134,7 +159,9 @@ def train(
 
             avg_val_loss /= len(val_loader)
             if round(avg_val_loss, 4) < round(best_loss, 4):
-                typer.echo(f"  Best model: val_loss={avg_val_loss:.4f} (was {best_loss:.4f}), epoch {epoch+1}")
+                typer.echo(
+                    f"  Best model: val_loss={avg_val_loss:.4f} (was {best_loss:.4f}), epoch {epoch+1}"
+                )
                 best_loss = avg_val_loss
                 torch.save(model.state_dict(), save_dir / "best_model.pth")
 
