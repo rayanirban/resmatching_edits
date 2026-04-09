@@ -16,14 +16,28 @@ import typer
 
 BASE_URL = "https://download.fht.org/jug/resmatching/data/"
 
-# Each entry: subset key -> (filename on server, sha256 or None to skip check)
-# Update hashes once the files are public.
+
 DATASETS = {
-    "ccp": ("CCPs_SuperRes.zip", None),
-    "er": ("ER_SuperRes.zip", None),
-    "factin": ("F-actin_SuperRes.zip", None),
-    "mt": ("Microtubules_SuperRes.zip", None),
-    "mt_noisy": ("MicrotubulesNoisy_SuperRes.zip", None),
+    "ccp": (
+        "CCPs_SuperRes.zip",
+        "4cf2d5a4f529c2ae6d016e51842fd5a2c87252fdee7da1c9926319017596e72b",
+    ),
+    "er": (
+        "ER_SuperRes.zip",
+        "bbeabf63a18bb2234aa76426536d080165a2f36bc947e5dff0d310dac9d149bf",
+    ),
+    "factin": (
+        "F-actin_SuperRes.zip",
+        "291592810013ecc1cf1cad4f89fc687977e4918a31031f8c0e0a0446b34f30d6",
+    ),
+    "mt": (
+        "Microtubules_SuperRes.zip",
+        "8d19b4b26e6d24a15224df23f48c6a9e28331f09590bc2d84d2c5ebe1dc9f3a7",
+    ),
+    "mt_noisy": (
+        "MicrotubulesNoisy_SuperRes.zip",
+        "3f2796c6fa9ecca91043928dc3bb0da794bea3773659f206aab9246f5b9c597d",
+    ),
 }
 
 DESCRIPTIONS = {
@@ -78,8 +92,7 @@ def main(
 
     typer.echo("\nAll done. Data layout:")
     for key in keys:
-        filename, _ = DATASETS[key]
-        typer.echo(f"  {data_dir / filename.replace('.zip', '')}/")
+        typer.echo(f"  {data_dir / key}/")
 
 
 if __name__ == "__main__":

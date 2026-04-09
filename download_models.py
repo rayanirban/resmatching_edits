@@ -23,14 +23,22 @@ DESCRIPTIONS = {
     "mt_noisy": "Microtubules (noisy input)",
 }
 
-# Each entry: subset key -> {filename: sha256 or None}
-# Update hashes once files are public.
-MODELS: dict[str, dict[str, str | None]] = {
-    "ccp": {"best_model.pth": None, "last_model.pth": None},
-    "er": {"best_model.pth": None, "last_model.pth": None},
-    "factin": {"best_model.pth": None, "last_model.pth": None},
-    "mt": {"best_model.pth": None, "last_model.pth": None},
-    "mt_noisy": {"best_model.pth": None, "last_model.pth": None},
+MODELS: dict[str, dict[str, str]] = {
+    "ccp": {
+        "best_model.pth": "5e0d06074b3fad83000bf18f8ed18d4fa286aa36c31acaa41bc96df356045d85"
+    },
+    "er": {
+        "best_model.pth": "dbd629fef8460a340940dde4b74881874124d121cebaea997a350ad0e101fb16"
+    },
+    "factin": {
+        "best_model.pth": "34a59b21bdda3039a24a2c4d3b64985fb128903b993bdbf1f62c851f114663ed"
+    },
+    "mt": {
+        "best_model.pth": "a5d2269738007c7cd966ab9d4f26b0ea2ed93839f3315dbb89bc0f079ba5de7e"
+    },
+    "mt_noisy": {
+        "best_model.pth": "64083cb0fefb9f6875066d42ad6df386c6fa0c9e0cf6321a2c1f2265a8a68d10"
+    },
 }
 
 Subset = Enum("Subset", {k: k for k in MODELS})
