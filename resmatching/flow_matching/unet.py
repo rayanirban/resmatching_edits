@@ -4,7 +4,7 @@ from torch.utils.checkpoint import checkpoint
 from torchcfm.models.unet.unet import UNetModel as _UNetBase
 
 _NUM_CLASSES = 1000
-
+ 
 
 def _enable_attention_checkpoint(model):
     """Patch all AttentionBlocks in model to always use gradient checkpointing."""

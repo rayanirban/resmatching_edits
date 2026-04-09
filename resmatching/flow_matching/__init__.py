@@ -1,2 +1,5 @@
-from resmatching.flow_matching.matchers import CCFMFlowMatcher, CCFMVariancePreservingFlowMatcher
+from resmatching.flow_matching.matchers import (
+    CCFMFlowMatcher,
+    CCFMVariancePreservingFlowMatcher,
+)
 from resmatching.flow_matching.unet import CCFMUNet

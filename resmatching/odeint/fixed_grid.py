@@ -37,9 +37,21 @@ class Heun3(FixedGridODESolver):
 
         butcher_tableu = [
             [0.0, 0.0, 0.0, 0.0],
-            [1/3, 1/3, 0.0, 0.0],
-            [2/3, 0.0, 2/3, 0.0],
-            [0.0, 1/4, 0.0, 3/4],
+            [1 / 3, 1 / 3, 0.0, 0.0],
+            [2 / 3, 0.0, 2 / 3, 0.0],
+            [0.0, 1 / 4, 0.0, 3 / 4],
         ]
 
-        return rk3_step_func(func, t0, dt, t1, y0, butcher_tableu=butcher_tableu, f0=f0, perturb=self.perturb), f0
+        return (
+            rk3_step_func(
+                func,
+                t0,
+                dt,
+                t1,
+                y0,
+                butcher_tableu=butcher_tableu,
+                f0=f0,
+                perturb=self.perturb,
+            ),
+            f0,
+        )

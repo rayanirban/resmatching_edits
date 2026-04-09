@@ -14,23 +14,23 @@ from typing import Annotated, Optional
 import pooch
 import typer
 
-BASE_URL = "https://download.fht.org/jug/Anirban/ISBI2026/"
+BASE_URL = "https://download.fht.org/jug/resmatching/data/"
 
 # Each entry: subset key -> (filename on server, sha256 or None to skip check)
 # Update hashes once the files are public.
 DATASETS = {
-    "ccp":      ("CCPs_SuperRes.zip",              None),
-    "er":       ("ER_SuperRes.zip",                None),
-    "factin":   ("F-actin_SuperRes.zip",           None),
-    "mt":       ("Microtubules_SuperRes.zip",      None),
+    "ccp": ("CCPs_SuperRes.zip", None),
+    "er": ("ER_SuperRes.zip", None),
+    "factin": ("F-actin_SuperRes.zip", None),
+    "mt": ("Microtubules_SuperRes.zip", None),
     "mt_noisy": ("MicrotubulesNoisy_SuperRes.zip", None),
 }
 
 DESCRIPTIONS = {
-    "ccp":      "Clathrin-Coated Pits",
-    "er":       "Endoplasmic Reticulum",
-    "factin":   "F-actin",
-    "mt":       "Microtubules",
+    "ccp": "Clathrin-Coated Pits",
+    "er": "Endoplasmic Reticulum",
+    "factin": "F-actin",
+    "mt": "Microtubules",
     "mt_noisy": "Microtubules (noisy input)",
 }
 
@@ -60,8 +60,15 @@ def _download_subset(key: str, data_dir: Path) -> None:
 
 @app.command()
 def main(
-    data_dir: Annotated[Path, typer.Option(help="Directory to download data into.")] = Path("data"),
-    subset: Annotated[Optional[list[Subset]], typer.Option(help="Subset(s) to download. Repeat to select multiple. Default: all.")] = None,
+    data_dir: Annotated[
+        Path, typer.Option(help="Directory to download data into.")
+    ] = Path("data"),
+    subset: Annotated[
+        Optional[list[Subset]],
+        typer.Option(
+            help="Subset(s) to download. Repeat to select multiple. Default: all."
+        ),
+    ] = None,
 ):
     keys = [s.value for s in subset] if subset else list(DATASETS)
     data_dir.mkdir(parents=True, exist_ok=True)
