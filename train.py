@@ -1,6 +1,8 @@
+import random
 from pathlib import Path
 from typing import Annotated, Optional
 
+import numpy as np
 import torch
 import wandb
 from torch.utils.data import DataLoader
@@ -49,10 +51,17 @@ def train(
     no_wandb: Annotated[
         bool, typer.Option("--no-wandb", help="Disable Weights & Biases logging.")
     ] = False,
+    seed: Annotated[int, typer.Option(help="Random seed.")] = 42,
 ):
     if subset not in SUBSET_FOLDERS:
         typer.echo(f"Error: subset must be one of {list(SUBSET_FOLDERS)}", err=True)
         raise typer.Exit(1)
+
+    random.seed(seed)
+    np.random.seed(seed)
+    torch.manual_seed(seed)
+    torch.cuda.manual_seed(seed)
+    torch.cuda.manual_seed_all(seed)
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     use_wandb = not no_wandb
@@ -106,6 +115,7 @@ def train(
                 learning_rate=lr,
                 max_epochs=n_epochs,
                 batch_size=batch_size,
+                seed=seed,
             )
         )
         wandb.run.log_code(".", include_fn=lambda path: path.endswith(".py"))
