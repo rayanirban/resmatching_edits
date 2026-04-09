@@ -1,2 +1,2 @@
-from datasets.biosr import BioSRDataset
-from datasets.data_norm import normalize, denormalize, STATS
+from .biosr import BioSRDataset
+from .data_norm import normalize, denormalize, STATS

@@ -5,7 +5,7 @@ import torch
 from torch.utils import data
 from tifffile import imread
 
-from datasets.data_norm import normalize
+from .data_norm import normalize
 
 SUBSETS = ["ccp", "er", "factin", "mt", "mt_noisy"]
 
