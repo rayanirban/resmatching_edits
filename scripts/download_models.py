@@ -1,9 +1,9 @@
 """Download pre-trained ResMatching checkpoints.
 
 Usage:
-    uv run python download_models.py               # download all pre-trained models
-    uv run python download_models.py --checkpoint-dir /my/path
-    uv run python download_models.py --subset ccp --subset er
+    uv run python scripts/download_models.py               # download all pre-trained models
+    uv run python scripts/download_models.py --checkpoint-dir /my/path
+    uv run python scripts/download_models.py --subset ccp --subset er
 """
 
 from enum import Enum

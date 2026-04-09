@@ -1,8 +1,8 @@
 """Compute and plot calibration curves for ResMatching inference results.
 
 Usage:
-    uv run python calibrate.py ccp --results-dir data/CCPs_SuperRes
-    uv run python calibrate.py mt --results-dir data/Microtubules_SuperRes --output calibration.pdf
+    uv run python scripts/calibrate.py ccp --results-dir data/CCPs_SuperRes
+    uv run python scripts/calibrate.py mt --results-dir data/Microtubules_SuperRes --output calibration.pdf
 """
 
 from pathlib import Path

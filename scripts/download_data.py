@@ -1,9 +1,9 @@
 """Download BioSR datasets used in ResMatching.
 
 Usage:
-    uv run python download_data.py               # download all subsets
-    uv run python download_data.py --data-dir /my/path
-    uv run python download_data.py --subset ccp --subset er
+    uv run python scripts/download_data.py               # download all subsets
+    uv run python scripts/download_data.py --data-dir /my/path
+    uv run python scripts/download_data.py --subset ccp --subset er
 """
 
 import zipfile
