@@ -19,6 +19,51 @@ pip install uv
 uv sync
 ```
 
+## Usage
+
+### Download data and checkpoints
+
+```bash
+# Download all BioSR subsets
+uv run python scripts/download_data.py
+
+# Download a specific subset
+uv run python scripts/download_data.py --subset ccp --subset er
+
+# Download pre-trained checkpoints
+uv run python scripts/download_models.py
+
+# Download a specific checkpoint
+uv run python scripts/download_models.py --subset ccp
+```
+
+### Training
+
+```bash
+uv run python scripts/train.py ccp
+uv run python scripts/train.py mt --data-dir /path/to/data --n-epochs 300
+```
+
+### Inference
+
+```bash
+uv run python scripts/infer.py ccp --checkpoint checkpoints/ccp/best_model.pth
+uv run python scripts/infer.py ccp --checkpoint checkpoints/ccp/best_model.pth --data-dir /path/to/data
+```
+
+### Metrics
+
+```bash
+uv run python scripts/metrics.py ccp
+uv run python scripts/metrics.py ccp --results-dir /path/to/results
+```
+
+### Calibration
+
+```bash
+uv run python scripts/calibrate.py ccp --results-dir data/CCPs_SuperRes
+```
+
 ## License
 
 MIT
