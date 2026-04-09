@@ -9,7 +9,7 @@ from torch.utils.data import DataLoader
 from tqdm import tqdm
 import typer
 
-from datasets import BioSRDataset
+from resmatching.datasets import BioSRDataset
 from resmatching import CCFMFlowMatcher, CCFMUNet
 
 SUBSET_FOLDERS = {

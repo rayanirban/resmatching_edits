@@ -9,7 +9,7 @@ from tifffile import imread, imwrite
 from tqdm import tqdm
 import typer
 
-from datasets.data_norm import normalize, denormalize
+from resmatching.datasets.data_norm import normalize, denormalize
 from resmatching import CCFMUNet, odeint
 from resmatching.utils import extract_patches_inner, reconstruct_image_inner
 
