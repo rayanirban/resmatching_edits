@@ -12,21 +12,9 @@ import typer
 from resmatching.datasets import BioSRDataset
 from resmatching import CCFMFlowMatcher, CCFMUNet
 
-SUBSET_FOLDERS = {
-    "ccp": "CCPs_SuperRes",
-    "er": "ER_SuperRes",
-    "factin": "F-actin_SuperRes",
-    "mt": "Microtubules_SuperRes",
-    "mt_noisy": "MicrotubulesNoisy_SuperRes",
-}
-
-PROJECT_NAMES = {
-    "ccp": "BioSR_CCP",
-    "er": "BioSR_ER",
-    "factin": "BioSR_FACTIN",
-    "mt": "BioSR_MT",
-    "mt_noisy": "BioSR_MT_Noisy",
-}
+SUBSETS = [
+    "ccp", "er", "factin", "mt", "mt_noisy"
+]
 
 app = typer.Typer()
 
@@ -34,7 +22,7 @@ app = typer.Typer()
 @app.command()
 def train(
     subset: Annotated[
-        str, typer.Argument(help=f"Dataset subset. One of: {list(SUBSET_FOLDERS)}")
+        str, typer.Argument(help=f"Dataset subset. One of: ")
     ],
     data_dir: Annotated[
         Path, typer.Option(help="Root data directory containing subset folders.")
@@ -53,8 +41,8 @@ def train(
     ] = False,
     seed: Annotated[int, typer.Option(help="Random seed.")] = 42,
 ):
-    if subset not in SUBSET_FOLDERS:
-        typer.echo(f"Error: subset must be one of {list(SUBSET_FOLDERS)}", err=True)
+    if subset not in SUBSETS:
+        typer.echo(f"Error: subset must be one of {list(SUBSETS)}", err=True)
         raise typer.Exit(1)
 
     random.seed(seed)
@@ -66,7 +54,7 @@ def train(
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     use_wandb = not no_wandb
 
-    subset_dir = data_dir / SUBSET_FOLDERS[subset]
+    subset_dir = data_dir / subset
     if save_dir is None:
         save_dir = Path("checkpoints") / subset
     save_dir.mkdir(parents=True, exist_ok=True)
@@ -99,9 +87,8 @@ def train(
 
     # ── W&B ─────────────────────────────────────────────────────────────────
     if use_wandb:
-        project_name = PROJECT_NAMES[subset]
         experiment = wandb.init(
-            project=project_name,
+            project=subset,
             name="ResMatching",
             resume="allow",
             anonymous="must",
