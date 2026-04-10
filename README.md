@@ -57,7 +57,7 @@ Data is saved to `data/<subset>/` by default.
 uv run python scripts/train.py ccp
 ```
 
-The best checkpoint is saved to `checkpoints/ccp/best_model.pth`. Training runs for 200 epochs by default; see [script reference](#training) for options.
+The best checkpoint is saved to `checkpoints/ccp/best_model.pth`. Training runs for 200 epochs by default.
 
 **Step 3. Run inference**
 
