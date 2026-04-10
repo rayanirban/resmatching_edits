@@ -35,6 +35,8 @@ Experiments use the [BioSR](https://figshare.com/articles/dataset/BioSR/13264793
 
 There are two workflows depending on whether you want to train from scratch or use pre-trained checkpoints.
 
+> Metrics are reproducible from provided checkpoints. Full retraining may produce slight variance due to non-deterministic operations.
+
 ---
 
 ### Option A — Train from scratch
