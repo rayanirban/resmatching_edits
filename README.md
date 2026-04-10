@@ -4,7 +4,7 @@ Official implementation of **ResMatching**, accepted at [ISBI 2026](https://biom
 
 > **ResMatching: Noise-Resilient Computational Super-Resolution via Guided Conditional Flow Matching**  
 > Anirban Ray, Vera Galinova, Florian Jug
-> [[arXiv]](https://arxiv.org/abs/2510.26601)
+> [[arXiv]](https://arxiv.org/abs/2510.26601) | [[Interactive Results]](https://rayanirban.github.io/resmatching/)
 > 
 ![Figure 1](assets/figure1.png)
 
@@ -126,6 +126,19 @@ uv run python scripts/calibrate.py ccp --results-dir data/ccp
 ```
 
 ---
+
+## Citation
+
+If you find this work useful in your research, please consider citing:
+
+```bibtex
+@article{resmatching2025,
+  title={ResMatching: Noise-Resilient Computational Super-Resolution via Guided Conditional Flow Matching},
+  author={Anirban Ray and Vera Galinova and Florian Jug},
+  journal={arXiv preprint arXiv:2510.26601},
+  year={2025}
+}
+```
 
 ## License
 
