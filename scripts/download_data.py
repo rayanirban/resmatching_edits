@@ -19,24 +19,24 @@ BASE_URL = "https://download.fht.org/jug/resmatching/data/"
 
 DATASETS = {
     "ccp": (
-        "CCPs_SuperRes.zip",
-        "4cf2d5a4f529c2ae6d016e51842fd5a2c87252fdee7da1c9926319017596e72b",
+        "ccp.zip",
+        "cf6d2a6838a3f494e333ea28f533a876335d40b4a65ff863150271b9577d9dda",
     ),
     "er": (
-        "ER_SuperRes.zip",
-        "bbeabf63a18bb2234aa76426536d080165a2f36bc947e5dff0d310dac9d149bf",
+        "er.zip",
+        "f71724834db7fdff95a3334f2dc1fcfff7aec43e2b2daee14f6d29fa1c9a1b0a",
     ),
     "factin": (
-        "F-actin_SuperRes.zip",
-        "291592810013ecc1cf1cad4f89fc687977e4918a31031f8c0e0a0446b34f30d6",
+        "factin.zip",
+        "1da19967da54df576d4533d458272d3e8f684d13a0840f7be633f52ee95a1965",
     ),
     "mt": (
-        "Microtubules_SuperRes.zip",
-        "8d19b4b26e6d24a15224df23f48c6a9e28331f09590bc2d84d2c5ebe1dc9f3a7",
+        "mt.zip",
+        "b943e8212bc83d3e8349155421bf96fe346dd6533c5aefc6679dc50a25976f9b",
     ),
     "mt_noisy": (
-        "MicrotubulesNoisy_SuperRes.zip",
-        "3f2796c6fa9ecca91043928dc3bb0da794bea3773659f206aab9246f5b9c597d",
+        "mt_noisy.zip",
+        "6208ba16ac6cc79308a3c6eddab47a628bb2b75d34012fc0fad2d786ed63e846",
     ),
 }
 
