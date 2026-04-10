@@ -1,8 +1,8 @@
 """Compute and plot calibration curves for ResMatching inference results.
 
 Usage:
-    uv run python scripts/calibrate.py ccp --results-dir data/CCPs_SuperRes
-    uv run python scripts/calibrate.py mt --results-dir data/Microtubules_SuperRes --output calibration.pdf
+    uv run python scripts/calibrate.py ccp --results-dir data/ccp
+    uv run python scripts/calibrate.py mt --results-dir data/mt --output calibration.pdf
 """
 
 from pathlib import Path
@@ -18,16 +18,7 @@ from tqdm import tqdm
 from resmatching.calibration import Calibration, plot_calibration
 from resmatching.datasets.data_norm import normalize
 
-SUBSET_FOLDERS = {
-    "ccp": "CCPs_SuperRes",
-    "er": "ER_SuperRes",
-    "factin": "F-actin_SuperRes",
-    "mt": "Microtubules_SuperRes",
-    "mt_noisy": "MicrotubulesNoisy_SuperRes",
-}
-
-FOLDER_SUFFIX = {k: "" for k in SUBSET_FOLDERS}
-FOLDER_SUFFIX["mt_noisy"] = "_noisy"
+SUBSETS = ["ccp", "er", "factin", "mt", "mt_noisy"]
 
 app = typer.Typer()
 
@@ -44,9 +35,8 @@ def _load_split(
 
     Returns pred (N, H, W, 1), std (N, H, W, 1), target (N, H, W, 1).
     """
-    suffix = FOLDER_SUFFIX[subset]
     results_path = results_dir / f"{folder}_results"
-    data_path = data_dir / f"{folder}{suffix}"
+    data_path = data_dir / folder
 
     image_files = sorted(f for f in results_path.iterdir() if f.suffix == ".tif")
 
@@ -80,7 +70,7 @@ def _load_split(
 @app.command()
 def calibrate(
     subset: Annotated[
-        str, typer.Argument(help=f"Dataset subset. One of: {list(SUBSET_FOLDERS)}")
+        str, typer.Argument(help=f"Dataset subset. One of: {SUBSETS}")
     ],
     results_dir: Annotated[
         Path,
@@ -104,15 +94,15 @@ def calibrate(
         int, typer.Option(help="Number of bins for calibration stats.")
     ] = 50,
 ):
-    if subset not in SUBSET_FOLDERS:
-        typer.echo(f"Error: subset must be one of {list(SUBSET_FOLDERS)}", err=True)
+    if subset not in SUBSETS:
+        typer.echo(f"Error: subset must be one of {SUBSETS}", err=True)
         raise typer.Exit(1)
 
     if output is None:
         output = results_dir / "calibration.pdf"
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    subset_dir = data_dir / SUBSET_FOLDERS[subset]
+    subset_dir = data_dir / subset
 
     typer.echo("Loading val split...")
     pred_val, std_val, target_val = _load_split(

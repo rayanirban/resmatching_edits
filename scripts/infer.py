@@ -15,17 +15,7 @@ from resmatching.utils import extract_patches_inner, reconstruct_image_inner
 
 warnings.filterwarnings("ignore")
 
-SUBSET_FOLDERS = {
-    "ccp": "CCPs_SuperRes",
-    "er": "ER_SuperRes",
-    "factin": "F-actin_SuperRes",
-    "mt": "Microtubules_SuperRes",
-    "mt_noisy": "MicrotubulesNoisy_SuperRes",
-}
-
-# mt_noisy stores test/val images in folders named e.g. "test_noisy/" instead of "test/"
-FOLDER_SUFFIX = {k: "" for k in SUBSET_FOLDERS}
-FOLDER_SUFFIX["mt_noisy"] = "_noisy"
+SUBSETS = ["ccp", "er", "factin", "mt", "mt_noisy"]
 
 app = typer.Typer()
 
@@ -33,7 +23,7 @@ app = typer.Typer()
 @app.command()
 def infer(
     subset: Annotated[
-        str, typer.Argument(help=f"Dataset subset. One of: {list(SUBSET_FOLDERS)}")
+        str, typer.Argument(help=f"Dataset subset. One of: {SUBSETS}")
     ],
     checkpoint: Annotated[Path, typer.Option(help="Path to model .pth checkpoint.")],
     data_dir: Annotated[
@@ -61,8 +51,8 @@ def infer(
     patch_size: Annotated[int, typer.Option(help="Patch size for tiling.")] = 128,
     crop_size: Annotated[int, typer.Option(help="Inner crop size per patch.")] = 64,
 ):
-    if subset not in SUBSET_FOLDERS:
-        typer.echo(f"Error: subset must be one of {list(SUBSET_FOLDERS)}", err=True)
+    if subset not in SUBSETS:
+        typer.echo(f"Error: subset must be one of {SUBSETS}", err=True)
         raise typer.Exit(1)
 
     if folders is None:
@@ -77,12 +67,11 @@ def infer(
     model.eval()
     typer.echo(f"Loaded checkpoint: {checkpoint}")
 
-    subset_dir = data_dir / SUBSET_FOLDERS[subset]
-    suffix = FOLDER_SUFFIX[subset]
+    subset_dir = data_dir / subset
     ts = torch.linspace(0.0, 1.0, num_steps).to(device)
 
     for folder in folders:
-        folder_dir = subset_dir / f"{folder}{suffix}"
+        folder_dir = subset_dir / folder
         image_files = sorted(f for f in os.listdir(folder_dir) if f.endswith(".tif"))
 
         if output_dir is None:

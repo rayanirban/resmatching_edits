@@ -6,7 +6,7 @@ from typing import Annotated, Optional
 import numpy as np
 import torch
 from microssim import MicroMS3IM
-from tifffile import TiffFile
+from tifffile import imread, TiffFile
 from torchmetrics.image import MultiScaleStructuralSimilarityIndexMeasure
 from tqdm import tqdm
 import typer
@@ -16,30 +16,24 @@ from resmatching.utils import lpips, fid_score, FSIM, extract_patches_inner_metr
 
 warnings.filterwarnings("ignore")
 
-SUBSET_FOLDERS = {
-    "ccp":      "CCPs_SuperRes",
-    "er":       "ER_SuperRes",
-    "factin":   "F-actin_SuperRes",
-    "mt":       "Microtubules_SuperRes",
-    "mt_noisy": "MicrotubulesNoisy_SuperRes",
-}
+SUBSETS = ["ccp", "er", "factin", "mt", "mt_noisy"]
 
 app = typer.Typer()
 
 
 @app.command()
 def compute_metrics(
-    subset: Annotated[str, typer.Argument(help=f"Dataset subset. One of: {list(SUBSET_FOLDERS)}")],
+    subset: Annotated[str, typer.Argument(help=f"Dataset subset. One of: {SUBSETS}")],
     results_dir: Annotated[Optional[Path], typer.Option(help="Directory containing inference .tif results. Defaults to <data_dir>/<subset>/test_results/.")] = None,
     fid_dir: Annotated[Optional[Path], typer.Option(help="Directory of FID reference crops. Defaults to <data_dir>/<subset>/train_crops_fid_filtered/.")] = None,
     data_dir: Annotated[Path, typer.Option(help="Root data directory (used to resolve defaults).")] = Path("data"),
     n_samples: Annotated[int, typer.Option(help="Number of samples to average for MMSE prediction.")] = 50,
 ):
-    if subset not in SUBSET_FOLDERS:
-        typer.echo(f"Error: subset must be one of {list(SUBSET_FOLDERS)}", err=True)
+    if subset not in SUBSETS:
+        typer.echo(f"Error: subset must be one of {SUBSETS}", err=True)
         raise typer.Exit(1)
 
-    subset_dir = data_dir / SUBSET_FOLDERS[subset]
+    subset_dir = data_dir / subset
     if results_dir is None:
         results_dir = subset_dir / "test_results"
     if fid_dir is None:
@@ -65,12 +59,14 @@ def compute_metrics(
 
     typer.echo(f"Computing metrics over {len(image_files)} images (MMSE n={n_samples})...")
 
+    gt_dir = subset_dir / "test"
+
     for image_file in tqdm(image_files, desc="Images", leave=False):
         with TiffFile(results_dir / image_file) as tif:
             image = tif.asarray()
 
-        image_pred = image[:n_samples, -1, 1, ...]   # (n_samples, H, W)
-        image_gt   = image[0:1,        -1, 2, ...]   # (1, H, W)
+        image_pred = image[:n_samples, -1]            # (n_samples, H, W)
+        image_gt   = imread(gt_dir / image_file).astype("float32")[0:1]  # (1, H, W)
         mmse_pred  = np.mean(image_pred, axis=0, keepdims=True)
 
         # PSNR + MS-SSIM
