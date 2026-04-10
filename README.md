@@ -21,9 +21,9 @@ uv sync
 
 ## Example Notebook
 
-> **Start here for the quickest hands-on introduction:** `notebooks/resmatching_walkthrough.ipynb`
->
-> This beginner-friendly notebook is aimed at biologists and microscopists and is the easiest way to get a feel for the full ResMatching workflow.
+**Start here for the quickest hands-on introduction:** [notebooks/resmatching_walkthrough.ipynb](notebooks/resmatching_walkthrough.ipynb)
+
+This beginner-friendly notebook is aimed at biologists and microscopists and is the easiest way to get a feel for the full ResMatching workflow.
 
 The notebook explains each cell in detail, includes a tiny 2 to 3 epoch training demo, runs small-sample inference with a pre-trained model, computes lightweight metrics, plots calibration, and visualizes the input / ground truth / MMSE / posterior samples.
 
@@ -39,7 +39,7 @@ Experiments use the [BioSR](https://figshare.com/articles/dataset/BioSR/13264793
 | `mt` | Microtubules |
 | `mt_noisy` | Microtubules data with additional noise added |
 
-## Reproducing Results
+## Reproducing results
 
 There are two workflows depending on whether you want to train from scratch or use pre-trained checkpoints.
 
