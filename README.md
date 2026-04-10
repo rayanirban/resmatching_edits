@@ -19,52 +19,112 @@ pip install uv
 uv sync
 ```
 
-## Usage
+## Datasets
 
-### Download data and checkpoints
+Experiments use the [BioSR](https://figshare.com/articles/dataset/BioSR/13264793/9) dataset. The following subsets are supported:
+
+| Subset | Structure |
+|--------|-----------|
+| `ccp` | Clathrin-Coated Pits |
+| `er` | Endoplasmic Reticulum |
+| `factin` | F-actin |
+| `mt` | Microtubules |
+| `mt_noisy` | Microtubules data with additional noise added |
+
+## Reproducing Results
+
+There are two workflows depending on whether you want to train from scratch or use pre-trained checkpoints.
+
+---
+
+### Option A — Train from scratch
+
+**Step 1. Download data**
 
 ```bash
-# Download all BioSR subsets
+# Download all subsets
 uv run python scripts/download_data.py
 
-# Download a specific subset
-uv run python scripts/download_data.py --subset ccp --subset er
-
-# Download pre-trained checkpoints
-uv run python scripts/download_models.py
-
-# Download a specific checkpoint
-uv run python scripts/download_models.py --subset ccp
+# Or download a specific subset
+uv run python scripts/download_data.py --subset ccp
 ```
 
-### Training
+Data is saved to `data/<subset>/` by default.
+
+**Step 2. Train**
 
 ```bash
 uv run python scripts/train.py ccp
-uv run python scripts/train.py mt --data-dir /path/to/data --n-epochs 300
 ```
 
-### Inference
+The best checkpoint is saved to `checkpoints/ccp/best_model.pth`. Training runs for 200 epochs by default; see [script reference](#training) for options.
+
+**Step 3. Run inference**
 
 ```bash
 uv run python scripts/infer.py ccp --checkpoint checkpoints/ccp/best_model.pth
-uv run python scripts/infer.py ccp --checkpoint checkpoints/ccp/best_model.pth --data-dir /path/to/data
 ```
 
-### Metrics
+Writes multi-sample TIFFs to `data/ccp/test_results/` and `data/ccp/val_results/`.
+
+**Step 4. Compute metrics**
 
 ```bash
 uv run python scripts/metrics.py ccp
-uv run python scripts/metrics.py ccp --results-dir /path/to/results
 ```
 
-### Calibration
+Reads from `data/ccp/test_results/` and prints PSNR, MicroMS3IM, LPIPS, FID, FSIM, and GMSD.
+
+**Step 5. (Optional) Calibration**
 
 ```bash
-uv run python scripts/calibrate.py ccp --results-dir data/CCPs_SuperRes
+uv run python scripts/calibrate.py ccp --results-dir data/ccp
 ```
+
+Reads `val_results/` and `test_results/` under `data/ccp/` and saves a calibration curve to `data/ccp/calibration.pdf`.
+
+---
+
+### Option B — Use pre-trained checkpoints
+
+**Step 1. Download data**
+
+```bash
+uv run python scripts/download_data.py --subset ccp
+```
+
+**Step 2. Download pre-trained checkpoints**
+
+```bash
+# Download all checkpoints
+uv run python scripts/download_models.py
+
+# Or download a specific checkpoint
+uv run python scripts/download_models.py --subset ccp
+```
+
+Checkpoints are saved to `checkpoints/<subset>/best_model.pth` by default.
+
+**Step 3. Run inference**
+
+```bash
+uv run python scripts/infer.py ccp --checkpoint checkpoints/ccp/best_model.pth
+```
+
+**Step 4. Compute metrics**
+
+```bash
+uv run python scripts/metrics.py ccp
+```
+
+**Step 5. (Optional) Calibration**
+
+```bash
+uv run python scripts/calibrate.py ccp --results-dir data/ccp
+```
+
+---
 
 ## License
 
 MIT
-
