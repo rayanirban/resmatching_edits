@@ -62,13 +62,8 @@ def build_notebook() -> dict:
             - **Channel 0 is used as the clean / high-resolution target**.
             - That convention is what we follow in this notebook, even if some older comments in the code suggest the opposite.
 
-            Suggested places where you can later insert your own explanatory figures:
-
-            - A figure showing how the data is created from a clean image plus noise.
-            - A figure explaining the concatenation of the current sample and the conditioning image before the model.
-            - A figure showing iterative inference across the ODE steps.
-
-            Those additions will fit naturally into the markdown cells in this notebook.
+            Throughout the notebook, we also include a few teaching figures from `notebooks/figures/`.
+            These are there to give a visual explanation before readers look at the code.
             """
         ),
         md(
@@ -161,6 +156,16 @@ def build_notebook() -> dict:
             print(f"Compute device  : {DEVICE}")
             print(f"Data folder     : {DATA_DIR / SUBSET}")
             print(f"Checkpoint file : {CHECKPOINT_DIR / SUBSET / 'best_model.pth'}")
+            """
+        ),
+        md(
+            """
+            ### Visual Intuition: Convex Combination During Training
+
+            The training objective is based on intermediate states between random noise and the target image.
+            If you are presenting this to a non-technical audience, it often helps to show the picture first and only then discuss the training cell.
+
+            ![Convex combination overview](figures/convex_combination.png)
             """
         ),
         md(
@@ -275,6 +280,16 @@ def build_notebook() -> dict:
             - and saves the best tiny-demo checkpoint inside `notebooks/outputs/`.
 
             If you are presenting the project to non-coders, this is usually the key cell to explain slowly.
+            """
+        ),
+        md(
+            """
+            ### Visual Intuition: What Happens During Training
+
+            This figure can be read as a companion to the tiny training loop below.
+            It helps explain what the model receives as input and what it is asked to predict.
+
+            ![Training overview](figures/training.png)
             """
         ),
         code(
@@ -436,6 +451,16 @@ def build_notebook() -> dict:
             - and stitches those patch predictions back into a full image.
 
             This is the most important cell for understanding how ResMatching generates both a prediction and an uncertainty estimate.
+            """
+        ),
+        md(
+            """
+            ### Visual Intuition: Iterative Inference
+
+            In inference, the model does not jump directly from noise to the final prediction.
+            Instead, it takes many small steps, gradually refining the reconstruction while being guided by the observed input image.
+
+            ![Iterative inference overview](figures/iterative_inference.png)
             """
         ),
         code(
@@ -692,6 +717,16 @@ def build_notebook() -> dict:
 
             If you only use a very small number of images, the curve may look noisy.
             That is expected for a lightweight demo.
+            """
+        ),
+        md(
+            """
+            ### Visual Intuition: Posterior Sampling
+
+            ResMatching produces multiple plausible reconstructions for the same input image.
+            This figure is useful when introducing the idea that uncertainty is estimated from variation across those posterior samples.
+
+            <img src="figures/posterior_sampling.png" alt="Posterior sampling overview" width="60%">
             """
         ),
         code(
