@@ -22,3 +22,7 @@ dependencies = [
     "pooch",
     "typer",
 ]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
