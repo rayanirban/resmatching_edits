@@ -19,6 +19,14 @@ pip install uv
 uv sync
 ```
 
+## Example Notebook
+
+For a beginner-friendly walkthrough aimed at biologists and microscopists, see:
+
+- `notebooks/resmatching_walkthrough.ipynb`
+
+The notebook explains each cell in detail, includes a tiny 2 to 3 epoch training demo, runs small-sample inference with a pre-trained model, computes lightweight metrics, plots calibration, and visualizes the input / ground truth / MMSE / posterior samples.
+
 ## Datasets
 
 Experiments use the [BioSR](https://figshare.com/articles/dataset/BioSR/13264793/9) dataset. The following subsets are supported:
