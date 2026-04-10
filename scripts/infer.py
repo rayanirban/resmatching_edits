@@ -22,9 +22,7 @@ app = typer.Typer()
 
 @app.command()
 def infer(
-    subset: Annotated[
-        str, typer.Argument(help=f"Dataset subset. One of: {SUBSETS}")
-    ],
+    subset: Annotated[str, typer.Argument(help=f"Dataset subset. One of: {SUBSETS}")],
     checkpoint: Annotated[Path, typer.Option(help="Path to model .pth checkpoint.")],
     data_dir: Annotated[
         Path, typer.Option(help="Root data directory containing subset folders.")
